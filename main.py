@@ -1,8 +1,10 @@
 from tkinter import *
 import random
+from datetime import datetime
 
 
 def starting_count_down(count):
+
     time_label.config(text=f"Time do start: {count}", fg='#FF6D6D')
     if count > 0:
         window.after(1000, starting_count_down, count-1)
@@ -13,6 +15,7 @@ def starting_count_down(count):
 
 
 def typing_count_down(seconds):
+
     time_label.config(text=f"Seconds to end: {seconds}", fg='black')
     if seconds > 0:
         window.after(1000, typing_count_down, seconds-1)
@@ -59,6 +62,8 @@ def typing():
 
 
 def calculate_result():
+    global total_words, total_chars
+
     result_label.focus()
     text_entry.delete(0, 'end')
     time_label.config(text='STOP!', fg='#FF6D6D')
@@ -69,6 +74,18 @@ def calculate_result():
         total_chars += len(word)
 
     result_label.config(text=f"Words/chars per min: {total_words}/{total_chars}")
+
+
+def save():
+
+    now = datetime.now()
+    now = now.strftime("%d/%m/%Y %H:%M:%S")
+
+    try:
+        with open('results.txt', 'a') as file:
+            file.write(f'{now}, Words/chars per min: {total_words}/{total_chars}\n')
+    except NameError:
+        time_label.config(text="No results to save")
 
 
 def quiting():
@@ -105,7 +122,7 @@ text_label6 = Label(text=text[5:6], font=('Arial', 15), bg='#F2EDD7')
 text_label6.grid(row=2, column=5)
 
 time_label = Label(height=2, text="Waiting ..", font=('Arial', 15, "bold"), bg='#F2EDD7')
-time_label.grid(row=1, column=2, columnspan=3)
+time_label.grid(row=1, column=3, columnspan=3)
 result_label = Label(height=2, text="Words/chars per min: ..", font=('Arial', 15, "bold"), bg='#F2EDD7')
 result_label.grid(row=5, column=0, columnspan=3)
 
@@ -114,8 +131,10 @@ text_entry.grid(row=3, column=0, columnspan=6)
 
 start_button = Button(height=1, width=6, text="START", font=('Arial', 12, "bold"), bg='#9AE66E', command=lambda: starting_count_down(3))
 start_button.grid(row=1, column=0)
+save_button = Button(height=1, width=6, text="SAVE", font=('Arial', 12, "bold"), bg='#84DFFF', command=save)
+save_button.grid(row=1, column=1)
 quit_button = Button(height=1, width=6, text="QUIT", font=('Arial', 12, "bold"), bg='#FF6D6D', command=quiting)
-quit_button.grid(row=1, column=1)
+quit_button.grid(row=1, column=2)
 
 
 window.mainloop()
